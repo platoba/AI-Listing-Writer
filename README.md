@@ -1,4 +1,4 @@
-# AI Listing Writer v2.0 - Telegram Bot
+# AI Listing Writer v3.0 - Telegram Bot
 
 [![CI](https://github.com/platoba/AI-Listing-Writer/actions/workflows/ci.yml/badge.svg)](https://github.com/platoba/AI-Listing-Writer/actions)
 
@@ -21,7 +21,15 @@
 | 🏷️ eBay | Title + Item Specifics + Description + Shipping | EN/CN |
 | 🔵 Walmart | Product Name + Features + Descriptions + Attributes | EN/CN |
 
-### v2.0 New Features
+### v3.0 New Features
+
+- ⚖️ **Compare Mode** — `/compare product` generates and compares listings across platforms with AI analysis
+- 🔍 **Keyword Research** — `/keywords product` AI-powered SEO keyword suggestions (primary, long-tail, trending, negative)
+- 📦 **Export** — `/export csv|json|txt|html` export generation history in multiple formats
+- 🏗️ **Keyword Density** — built-in keyword density analysis for SEO optimization
+- 🧪 **40+ Tests** — comprehensive test coverage for all modules
+
+### v2.0 Features
 
 - 🚀 **Batch Mode** — `/all product` generates listings for all 8 platforms at once
 - 🔧 **Optimize** — `/optimize` analyzes and improves existing listings
@@ -65,6 +73,17 @@ python bot.py
 # Batch: all platforms at once
 /all wireless earbuds premium
 
+# Compare across platforms
+/compare bluetooth speaker waterproof
+
+# Keyword research
+/keywords amazon wireless earbuds
+/keywords shopee 蓝牙耳机
+
+# Export history
+/export csv
+/export json
+
 # Optimize existing listing
 /optimize
 (paste your listing)
@@ -83,12 +102,17 @@ AI-Listing-Writer/
 │   ├── config.py          # Environment config
 │   ├── platforms.py       # 8 platform templates
 │   ├── ai_engine.py       # AI generation + retry + optimize + translate
-│   └── history.py         # Redis/in-memory history + rate limiting
+│   ├── history.py         # Redis/in-memory history + rate limiting
+│   ├── export.py          # Export to CSV/JSON/TXT/HTML
+│   └── keywords.py        # Keyword extraction + AI suggestions + density
 ├── bot.py                 # Main bot entry point
 ├── tests/
-│   └── test_bot.py        # 20 tests (config/platforms/AI/history/commands)
+│   ├── test_bot.py        # Bot command + integration tests
+│   ├── test_export.py     # Export format tests
+│   └── test_keywords.py   # Keyword analysis tests
 ├── docker-compose.yml     # Bot + Redis
 ├── Dockerfile
+├── Makefile               # Common operations
 ├── .github/workflows/ci.yml
 └── .env.example
 ```
@@ -114,9 +138,16 @@ MIT
 
 ## 中文
 
-### AI电商Listing文案生成器 v2.0
+### AI电商Listing文案生成器 v3.0
 
 一个Telegram机器人，用AI为8大电商平台生成专业的产品listing文案。
+
+### v3.0 新功能
+
+- ⚖️ **对比模式** — `/compare 产品` 多平台listing对比+AI分析
+- 🔍 **关键词研究** — `/keywords 产品` AI关键词建议（主词/长尾/趋势/否定词）
+- 📦 **导出功能** — `/export csv|json|txt|html` 多格式导出生成记录
+- 🧪 **40+测试** — 全模块测试覆盖
 
 ### v2.0 新功能
 

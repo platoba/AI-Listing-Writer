@@ -1,10 +1,13 @@
 """
-AI Listing Writer v2.0 - Telegram Bot
+AI Listing Writer v3.0 - Telegram Bot
 AI驱动的电商产品listing文案生成器
 支持 Amazon / Shopee / Lazada / AliExpress / TikTok Shop / 独立站 / eBay / Walmart
 
 Features:
 - /all: Batch generate for all platforms at once
+- /compare: Multi-platform comparison with AI analysis
+- /keywords: AI-powered SEO keyword suggestions
+- /export: Export history to CSV/JSON/TXT/HTML
 - /history: View generation history
 - /stats: Usage statistics
 - /optimize: Optimize existing listing
@@ -23,6 +26,8 @@ from app.config import config
 from app.platforms import PLATFORMS, get_platform, list_platforms
 from app.ai_engine import call_ai, optimize_listing, translate_listing
 from app.history import HistoryStore
+from app.export import export_records
+from app.keywords import extract_keywords, suggest_keywords_ai, keyword_density
 
 config.validate()
 
@@ -151,6 +156,68 @@ def cmd_stats(chat_id: int, msg_id: int):
     tg_send(chat_id, "\n".join(lines), msg_id)
 
 
+def cmd_export(chat_id: int, msg_id: int, fmt: str = "csv"):
+    """Export generation history in specified format."""
+    history = store.get_history(chat_id, 50)
+    if not history:
+        tg_send(chat_id, "📭 暂无记录可导出", msg_id)
+        return
+    result = export_records(history, fmt)
+    if result is None:
+        tg_send(chat_id, f"⚠️ 不支持的格式: {fmt}\n支持: csv, json, txt, html", msg_id)
+        return
+    header = f"📦 *导出 ({fmt.upper()})* — {len(history)}条记录\n\n"
+    send_long(chat_id, f"```\n{result}\n```", header, msg_id)
+
+
+def cmd_keywords(chat_id: int, msg_id: int, product: str, platform: str = "amazon"):
+    """Generate keyword suggestions for a product."""
+    tg_send(chat_id, f"🔍 正在为 *{product}* 生成关键词建议...\n平台: {platform}", msg_id)
+    result = suggest_keywords_ai(product, platform)
+    send_long(chat_id, result, "🔍 *关键词建议*\n\n", msg_id)
+
+
+def cmd_compare(chat_id: int, msg_id: int, product: str):
+    """Generate and compare listings across top 3 platforms."""
+    platforms_to_compare = ["amazon", "shopee", "独立站"]
+    lang = detect_lang(product)
+
+    if not store.check_rate_limit(chat_id, config.RATE_LIMIT_PER_MIN):
+        tg_send(chat_id, "⚠️ 请求过于频繁，请稍后再试", msg_id)
+        return
+
+    tg_send(chat_id, f"⚖️ *对比模式*\n产品: {product}\n正在生成 {len(platforms_to_compare)} 个平台对比...", msg_id)
+
+    results = {}
+    for key in platforms_to_compare:
+        p = PLATFORMS[key]
+        try:
+            prompt = p["template"].format(product=product, lang=lang)
+            result = call_ai(prompt)
+            results[key] = result
+            time.sleep(0.3)
+        except Exception as e:
+            results[key] = f"⚠️ 生成失败: {e}"
+
+    # Send each platform result
+    for key, result in results.items():
+        p = PLATFORMS[key]
+        send_long(chat_id, result, f"\n{'='*30}\n{p['emoji']} *{p['name']}*\n\n")
+        store.add_record(chat_id, key, product, result)
+
+    # Generate comparison summary
+    summary_prompt = f"""Compare these product listings for "{product}" across platforms.
+Give a brief comparison table and recommendation for which platform's listing is strongest.
+
+{chr(10).join(f'--- {k} ---{chr(10)}{v[:500]}' for k, v in results.items())}
+
+Output: Comparison table + strengths/weaknesses + recommendation."""
+
+    summary = call_ai(summary_prompt)
+    send_long(chat_id, summary, "\n📊 *对比分析*\n\n")
+    print(f"[对比] {product[:30]} | {len(platforms_to_compare)} platforms")
+
+
 def process_message(chat_id: int, msg_id: int, text: str):
     """Route messages to handlers."""
 
@@ -162,8 +229,11 @@ def process_message(chat_id: int, msg_id: int, text: str):
             f"AI驱动的电商产品listing文案生成器。\n\n"
             f"📌 *选择平台:*\n{platforms_list}\n\n"
             f"🚀 /all `产品` — 一键生成全平台listing\n"
+            f"⚖️ /compare `产品` — 多平台对比分析\n"
+            f"🔍 /keywords `产品` — AI关键词建议\n"
             f"📋 /history — 查看生成记录\n"
             f"📊 /stats — 使用统计\n"
+            f"📦 /export [csv|json|txt|html] — 导出记录\n"
             f"🔧 /optimize — 优化已有listing\n"
             f"🌍 /translate — 翻译listing\n\n"
             f"或直接发送: `平台名 产品描述`\n"
@@ -192,6 +262,43 @@ def process_message(chat_id: int, msg_id: int, text: str):
 
     if text == "/stats":
         cmd_stats(chat_id, msg_id)
+        return
+
+    # /export [format]
+    if text.startswith("/export"):
+        parts = text.split(maxsplit=1)
+        fmt = parts[1].strip() if len(parts) > 1 else "csv"
+        cmd_export(chat_id, msg_id, fmt)
+        return
+
+    # /keywords [platform] product
+    if text.startswith("/keywords "):
+        rest = text[10:].strip()
+        # Check if first word is a platform
+        parts = rest.split(maxsplit=1)
+        if len(parts) >= 2 and parts[0].lower() in PLATFORMS:
+            threading.Thread(
+                target=cmd_keywords,
+                args=(chat_id, msg_id, parts[1], parts[0].lower()),
+                daemon=True,
+            ).start()
+        else:
+            threading.Thread(
+                target=cmd_keywords,
+                args=(chat_id, msg_id, rest),
+                daemon=True,
+            ).start()
+        return
+
+    # /compare product
+    if text.startswith("/compare "):
+        product = text[9:].strip()
+        if len(product) < 2:
+            tg_send(chat_id, "请输入产品描述，例: `/compare wireless earbuds`", msg_id)
+            return
+        threading.Thread(
+            target=cmd_compare, args=(chat_id, msg_id, product), daemon=True
+        ).start()
         return
 
     # /all - batch mode
