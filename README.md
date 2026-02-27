@@ -28,7 +28,7 @@
 ### Quick Start
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/AI-Listing-Writer.git
+git clone https://github.com/platoba/AI-Listing-Writer.git
 cd AI-Listing-Writer
 cp .env.example .env
 # Edit .env
@@ -84,5 +84,5 @@ MIT
 
 ## 🔗 More Tools
 
-- [MultiAffiliateTGBot](https://github.com/YOUR_USERNAME/MultiAffiliateTGBot) - 5-platform affiliate link bot
-- [Amazon-SP-API-Python](https://github.com/YOUR_USERNAME/Amazon-SP-API-Python) - Modern Amazon SP-API client
+- [MultiAffiliateTGBot](https://github.com/platoba/MultiAffiliateTGBot) - 5-platform affiliate link bot
+- [Amazon-SP-API-Python](https://github.com/platoba/Amazon-SP-API-Python) - Modern Amazon SP-API client
