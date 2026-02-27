@@ -1,7 +1,15 @@
 """
-AI Listing Writer - Telegram Bot
+AI Listing Writer v2.0 - Telegram Bot
 AI驱动的电商产品listing文案生成器
-支持 Amazon / Shopee / Lazada / AliExpress / TikTok Shop / 独立站
+支持 Amazon / Shopee / Lazada / AliExpress / TikTok Shop / 独立站 / eBay / Walmart
+
+Features:
+- /all: Batch generate for all platforms at once
+- /history: View generation history
+- /stats: Usage statistics
+- /optimize: Optimize existing listing
+- /translate: Translate listing to another language
+- Rate limiting + Redis persistence
 """
 
 import os
@@ -9,121 +17,37 @@ import re
 import time
 import json
 import requests
+import threading
 
-TOKEN = os.environ.get("BOT_TOKEN", "")
-OPENAI_KEY = os.environ.get("OPENAI_API_KEY", "")
-OPENAI_BASE = os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1")
-OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
+from app.config import config
+from app.platforms import PLATFORMS, get_platform, list_platforms
+from app.ai_engine import call_ai, optimize_listing, translate_listing
+from app.history import HistoryStore
 
-if not TOKEN:
-    raise ValueError("未设置 BOT_TOKEN!")
-if not OPENAI_KEY:
-    raise ValueError("未设置 OPENAI_API_KEY!")
+config.validate()
 
-API_URL = f"https://api.telegram.org/bot{TOKEN}"
+API_URL = f"https://api.telegram.org/bot{config.BOT_TOKEN}"
+store = HistoryStore(config.REDIS_URL, config.MAX_HISTORY)
 
-PLATFORMS = {
-    "amazon": {
-        "name": "Amazon",
-        "emoji": "🛒",
-        "template": """Generate an Amazon product listing for: {product}
-
-Output format:
-**Title** (200 chars max, keyword-rich)
-**Bullet Points** (5 bullets, benefit-focused)
-**Description** (HTML formatted, 2000 chars)
-**Search Terms** (250 chars, comma-separated backend keywords)
-**Target Audience**: Who would buy this
-
-Language: {lang}
-Tone: Professional, benefit-driven, SEO-optimized"""
-    },
-    "shopee": {
-        "name": "Shopee",
-        "emoji": "🧡",
-        "template": """Generate a Shopee product listing for: {product}
-
-Output format:
-**标题** (120 chars max, 含关键词+emoji)
-**商品描述** (结构化, 含emoji分隔, 突出卖点)
-**标签** (10个热门标签, #开头)
-**规格参数** (表格形式)
-
-Language: {lang}
-Tone: 活泼、吸引眼球、适合东南亚市场"""
-    },
-    "lazada": {
-        "name": "Lazada",
-        "emoji": "💜",
-        "template": """Generate a Lazada product listing for: {product}
-
-Output format:
-**Title** (keyword-rich, 150 chars)
-**Short Description** (3-5 bullet points)
-**Long Description** (HTML, with features table)
-**Keywords** (15 keywords)
-
-Language: {lang}
-Tone: Clear, trustworthy, conversion-focused"""
-    },
-    "aliexpress": {
-        "name": "AliExpress",
-        "emoji": "🔴",
-        "template": """Generate an AliExpress product listing for: {product}
-
-Output format:
-**Title** (128 chars, keyword-dense)
-**Description** (HTML, image placeholders, specs table)
-**Keywords** (20 keywords for search)
-**Selling Points** (5 key USPs)
-
-Language: {lang}
-Tone: Value-focused, international buyer friendly"""
-    },
-    "tiktok": {
-        "name": "TikTok Shop",
-        "emoji": "🎵",
-        "template": """Generate a TikTok Shop product listing for: {product}
-
-Output format:
-**标题** (short, catchy, with emoji)
-**卖点** (3个核心卖点, 适合短视频口播)
-**描述** (简短有力, 适合年轻人)
-**标签** (10个TikTok热门标签)
-**短视频脚本** (15秒带货脚本)
-
-Language: {lang}
-Tone: 年轻、潮流、有感染力"""
-    },
-    "独立站": {
-        "name": "独立站/Shopify",
-        "emoji": "🌐",
-        "template": """Generate a Shopify/independent store product page for: {product}
-
-Output format:
-**SEO Title** (60 chars)
-**Meta Description** (155 chars)
-**H1 Headline** (compelling, benefit-driven)
-**Product Description** (storytelling + features + benefits)
-**FAQ** (5 common questions)
-**Social Proof Copy** (review-style testimonials)
-
-Language: {lang}
-Tone: Brand-focused, storytelling, premium feel"""
-    },
-}
+# User states (platform selection, optimize mode, etc.)
+user_states: dict[int, dict] = {}
 
 
-def tg_get(method, params=None):
+def tg_request(method: str, params: dict = None, json_data: dict = None):
+    """Make Telegram API request."""
     try:
-        r = requests.get(f"{API_URL}/{method}", params=params, timeout=35)
+        if json_data:
+            r = requests.post(f"{API_URL}/{method}", json=json_data, timeout=35)
+        else:
+            r = requests.get(f"{API_URL}/{method}", params=params, timeout=35)
         return r.json()
     except Exception as e:
         print(f"[API错误] {method}: {e}")
         return None
 
 
-def tg_send(chat_id, text, reply_to=None, parse_mode="Markdown"):
+def tg_send(chat_id: int, text: str, reply_to: int = None, parse_mode: str = "Markdown"):
+    """Send message with fallback."""
     params = {
         "chat_id": chat_id,
         "text": text,
@@ -133,151 +57,230 @@ def tg_send(chat_id, text, reply_to=None, parse_mode="Markdown"):
         params["reply_to_message_id"] = reply_to
     if parse_mode:
         params["parse_mode"] = parse_mode
-    result = tg_get("sendMessage", params)
-    # fallback without parse_mode if markdown fails
+    result = tg_request("sendMessage", params)
     if not result or not result.get("ok"):
         params.pop("parse_mode", None)
-        result = tg_get("sendMessage", params)
+        result = tg_request("sendMessage", params)
     return result
 
 
-def get_updates(offset=None):
-    params = {"timeout": 30}
-    if offset:
-        params["offset"] = offset
-    return tg_get("getUpdates", params)
+def send_long(chat_id: int, text: str, header: str = "", reply_to: int = None):
+    """Send long text in chunks."""
+    full = header + text if header else text
+    if len(full) <= 4000:
+        tg_send(chat_id, full, reply_to)
+        return
+    chunks = [full[i:i + 4000] for i in range(0, len(full), 4000)]
+    for i, chunk in enumerate(chunks):
+        tg_send(chat_id, chunk, reply_to if i == 0 else None)
+        time.sleep(0.3)
 
 
-def call_ai(prompt, system_msg="You are an expert e-commerce copywriter and SEO specialist."):
-    """调用OpenAI兼容API"""
-    headers = {
-        "Authorization": f"Bearer {OPENAI_KEY}",
-        "Content-Type": "application/json",
-    }
-    data = {
-        "model": OPENAI_MODEL,
-        "messages": [
-            {"role": "system", "content": system_msg},
-            {"role": "user", "content": prompt},
-        ],
-        "temperature": 0.7,
-        "max_tokens": 2000,
-    }
-    try:
-        r = requests.post(f"{OPENAI_BASE}/chat/completions", headers=headers, json=data, timeout=60)
-        r.raise_for_status()
-        return r.json()["choices"][0]["message"]["content"]
-    except Exception as e:
-        print(f"[AI错误] {e}")
-        return f"⚠️ AI生成失败: {e}"
+def detect_lang(text: str) -> str:
+    """Detect if text is Chinese or English."""
+    return "Chinese (简体中文)" if re.search(r'[\u4e00-\u9fff]', text) else "English"
 
 
-# 用户状态
-user_states = {}
+def generate_listing(chat_id: int, msg_id: int, platform_key: str, product: str):
+    """Generate listing for a single platform."""
+    p = PLATFORMS[platform_key]
+    lang = detect_lang(product)
+
+    if not store.check_rate_limit(chat_id, config.RATE_LIMIT_PER_MIN):
+        tg_send(chat_id, "⚠️ 请求过于频繁，请稍后再试（每分钟限10次）", msg_id)
+        return
+
+    tg_send(chat_id, f"{p['emoji']} 正在为 *{p['name']}* 生成listing...\n产品: {product}", msg_id)
+
+    prompt = p["template"].format(product=product, lang=lang)
+    result = call_ai(prompt)
+
+    send_long(chat_id, result, f"{p['emoji']} *{p['name']} Listing*\n\n", msg_id)
+
+    store.add_record(chat_id, platform_key, product, result)
+    print(f"[生成] {platform_key} | {product[:30]} | {lang}")
 
 
-def process_command(chat_id, msg_id, text):
-    """处理命令和消息"""
+def generate_all(chat_id: int, msg_id: int, product: str):
+    """Batch generate for all platforms."""
+    lang = detect_lang(product)
 
+    if not store.check_rate_limit(chat_id, config.RATE_LIMIT_PER_MIN):
+        tg_send(chat_id, "⚠️ 请求过于频繁，请稍后再试", msg_id)
+        return
+
+    tg_send(chat_id, f"🚀 *批量生成模式*\n产品: {product}\n正在为 {len(PLATFORMS)} 个平台生成listing...", msg_id)
+
+    for key, p in PLATFORMS.items():
+        try:
+            prompt = p["template"].format(product=product, lang=lang)
+            result = call_ai(prompt)
+            send_long(chat_id, result, f"\n{'='*30}\n{p['emoji']} *{p['name']}*\n\n")
+            store.add_record(chat_id, key, product, result)
+            time.sleep(0.5)
+        except Exception as e:
+            tg_send(chat_id, f"⚠️ {p['name']} 生成失败: {e}")
+
+    tg_send(chat_id, f"✅ 全部 {len(PLATFORMS)} 个平台listing已生成!")
+    print(f"[批量] {product[:30]} | {lang} | {len(PLATFORMS)} platforms")
+
+
+def cmd_history(chat_id: int, msg_id: int):
+    """Show generation history."""
+    history = store.get_history(chat_id, 10)
+    if not history:
+        tg_send(chat_id, "📭 暂无生成记录", msg_id)
+        return
+    lines = ["📋 *最近生成记录*\n"]
+    for i, r in enumerate(history, 1):
+        ts = time.strftime("%m-%d %H:%M", time.localtime(r["ts"]))
+        lines.append(f"{i}. [{ts}] {r['platform']} — {r['product'][:40]}")
+    tg_send(chat_id, "\n".join(lines), msg_id)
+
+
+def cmd_stats(chat_id: int, msg_id: int):
+    """Show usage stats."""
+    stats = store.get_stats(chat_id)
+    if stats["total"] == 0:
+        tg_send(chat_id, "📊 暂无使用数据", msg_id)
+        return
+    lines = [f"📊 *使用统计*\n\n总生成次数: {stats['total']}\n\n*平台分布:*"]
+    for p, count in sorted(stats["platforms"].items(), key=lambda x: -x[1]):
+        info = PLATFORMS.get(p, {"emoji": "❓", "name": p})
+        lines.append(f"  {info['emoji']} {info['name']}: {count}次")
+    tg_send(chat_id, "\n".join(lines), msg_id)
+
+
+def process_message(chat_id: int, msg_id: int, text: str):
+    """Route messages to handlers."""
+
+    # Commands
     if text == "/start":
-        platforms_list = "\n".join(f"  {v['emoji']} /{k} — {v['name']}" for k, v in PLATFORMS.items())
+        platforms_list = list_platforms()
         tg_send(chat_id,
-            f"✍️ *AI Listing Writer*\n\n"
+            f"✍️ *AI Listing Writer v2.0*\n\n"
             f"AI驱动的电商产品listing文案生成器。\n\n"
-            f"📌 选择平台:\n{platforms_list}\n\n"
+            f"📌 *选择平台:*\n{platforms_list}\n\n"
+            f"🚀 /all `产品` — 一键生成全平台listing\n"
+            f"📋 /history — 查看生成记录\n"
+            f"📊 /stats — 使用统计\n"
+            f"🔧 /optimize — 优化已有listing\n"
+            f"🌍 /translate — 翻译listing\n\n"
             f"或直接发送: `平台名 产品描述`\n"
-            f"例如: `amazon wireless earbuds`\n"
-            f"例如: `shopee 蓝牙耳机 降噪`\n\n"
-            f"🌐 支持中英文生成",
+            f"例如: `amazon wireless earbuds`",
             msg_id)
         return
 
     if text == "/help":
         tg_send(chat_id,
-            f"📖 *使用帮助*\n\n"
-            f"*方式一:* 先选平台再输入产品\n"
-            f"  1. 发送 /amazon 或 /shopee 等\n"
-            f"  2. 输入产品关键词\n\n"
-            f"*方式二:* 一步到位\n"
-            f"  发送: `平台 产品描述`\n"
-            f"  例: `amazon bluetooth speaker waterproof`\n"
-            f"  例: `tiktok 网红同款手机壳`\n\n"
-            f"*语言:* 自动检测中英文，也可指定\n"
-            f"  例: `shopee wireless mouse` → 英文listing\n"
-            f"  例: `shopee 无线鼠标` → 中文listing",
+            "📖 *使用帮助*\n\n"
+            "*方式一:* 先选平台再输入产品\n"
+            "  1. 发送 /amazon 或 /shopee 等\n"
+            "  2. 输入产品关键词\n\n"
+            "*方式二:* 一步到位\n"
+            "  `amazon bluetooth speaker waterproof`\n\n"
+            "*方式三:* 全平台批量\n"
+            "  `/all 蓝牙耳机 降噪`\n\n"
+            "*优化:* `/optimize` 然后粘贴已有listing\n"
+            "*翻译:* `/translate en` 或 `/translate zh`",
             msg_id)
         return
 
-    # 平台选择命令
+    if text == "/history":
+        cmd_history(chat_id, msg_id)
+        return
+
+    if text == "/stats":
+        cmd_stats(chat_id, msg_id)
+        return
+
+    # /all - batch mode
+    if text.startswith("/all "):
+        product = text[5:].strip()
+        if len(product) < 2:
+            tg_send(chat_id, "请输入产品描述，例: `/all wireless earbuds`", msg_id)
+            return
+        threading.Thread(target=generate_all, args=(chat_id, msg_id, product), daemon=True).start()
+        return
+
+    # /optimize
+    if text == "/optimize":
+        user_states[chat_id] = {"mode": "optimize"}
+        tg_send(chat_id, "🔧 请粘贴你要优化的listing文案，我会给出改进建议。\n\n先告诉我平台（如 amazon/shopee），或直接粘贴。", msg_id)
+        return
+
+    # /translate
+    if text.startswith("/translate"):
+        parts = text.split(maxsplit=1)
+        if len(parts) > 1:
+            user_states[chat_id] = {"mode": "translate", "lang": parts[1]}
+            tg_send(chat_id, f"🌍 请粘贴要翻译的listing，目标语言: {parts[1]}", msg_id)
+        else:
+            user_states[chat_id] = {"mode": "translate", "lang": "English"}
+            tg_send(chat_id, "🌍 请粘贴要翻译的listing（默认翻译为English）\n提示: `/translate zh` 指定中文", msg_id)
+        return
+
+    # Handle user states (optimize/translate mode)
+    state = user_states.pop(chat_id, None)
+    if state:
+        if state.get("mode") == "optimize":
+            tg_send(chat_id, "🔧 正在分析和优化...", msg_id)
+            platform_name = state.get("platform", "e-commerce")
+            result = optimize_listing(text, platform_name)
+            send_long(chat_id, result, "🔧 *优化建议*\n\n", msg_id)
+            return
+        if state.get("mode") == "translate":
+            tg_send(chat_id, f"🌍 正在翻译为 {state['lang']}...", msg_id)
+            result = translate_listing(text, state["lang"])
+            send_long(chat_id, result, "🌍 *翻译结果*\n\n", msg_id)
+            return
+        # Platform was selected, text is the product
+        if state.get("platform"):
+            generate_listing(chat_id, msg_id, state["platform"], text)
+            return
+
+    # Platform selection commands
     for key in PLATFORMS:
         if text == f"/{key}":
             user_states[chat_id] = {"platform": key}
             p = PLATFORMS[key]
             tg_send(chat_id,
                 f"{p['emoji']} 已选择 *{p['name']}*\n\n"
-                f"现在请输入产品描述/关键词:\n"
-                f"例: `bluetooth earbuds noise cancelling`",
+                f"现在请输入产品描述/关键词:",
                 msg_id)
             return
 
-    # 检查是否有平台前缀
+    # Inline format: "platform product"
     platform = None
     product = text
-
     for key in PLATFORMS:
         if text.lower().startswith(key + " "):
             platform = key
-            product = text[len(key)+1:].strip()
+            product = text[len(key) + 1:].strip()
             break
 
-    # 检查用户状态
-    if not platform and chat_id in user_states:
-        platform = user_states[chat_id].get("platform")
-        product = text
-        del user_states[chat_id]
-
-    if not platform:
-        tg_send(chat_id,
-            "请先选择平台，或使用格式: `平台 产品描述`\n"
-            "例: `amazon wireless earbuds`\n"
-            "发送 /start 查看所有平台",
-            msg_id)
+    if platform and product and len(product) >= 2:
+        generate_listing(chat_id, msg_id, platform, product)
         return
 
-    if not product or len(product) < 2:
-        tg_send(chat_id, "请输入产品描述/关键词", msg_id)
-        return
-
-    # 检测语言
-    has_chinese = bool(re.search(r'[\u4e00-\u9fff]', product))
-    lang = "Chinese (简体中文)" if has_chinese else "English"
-
-    p = PLATFORMS[platform]
-    tg_send(chat_id, f"{p['emoji']} 正在为 *{p['name']}* 生成listing...\n产品: {product}", msg_id)
-
-    prompt = p["template"].format(product=product, lang=lang)
-    result = call_ai(prompt)
-
-    # 分段发送（Telegram消息限制4096字符）
-    if len(result) > 4000:
-        chunks = [result[i:i+4000] for i in range(0, len(result), 4000)]
-        for i, chunk in enumerate(chunks):
-            header = f"{p['emoji']} *{p['name']} Listing* ({i+1}/{len(chunks)})\n\n" if i == 0 else ""
-            tg_send(chat_id, header + chunk, msg_id if i == 0 else None)
-    else:
-        tg_send(chat_id, f"{p['emoji']} *{p['name']} Listing*\n\n{result}", msg_id)
-
-    print(f"[生成] {platform} | {product[:30]} | {lang}")
+    # Unknown input
+    tg_send(chat_id,
+        "请选择平台或使用格式: `平台 产品描述`\n"
+        "例: `amazon wireless earbuds`\n"
+        "全平台: `/all 蓝牙耳机`\n"
+        "发送 /start 查看所有功能",
+        msg_id)
 
 
 def main():
-    print(f"\n{'='*50}")
-    print(f"  AI Listing Writer Bot")
-    print(f"  Model: {OPENAI_MODEL}")
+    print(f"\n{'=' * 50}")
+    print(f"  AI Listing Writer v2.0")
+    print(f"  Model: {config.OPENAI_MODEL}")
     print(f"  Platforms: {len(PLATFORMS)}")
-    print(f"{'='*50}")
+    print(f"  Redis: {'✅' if store.redis else '❌ (in-memory fallback)'}")
+    print(f"{'=' * 50}")
 
-    me = tg_get("getMe")
+    me = tg_request("getMe")
     if me and me.get("ok"):
         print(f"\n✅ @{me['result']['username']} 已上线!")
     else:
@@ -287,7 +290,10 @@ def main():
     offset = None
     while True:
         try:
-            result = get_updates(offset)
+            params = {"timeout": 30}
+            if offset:
+                params["offset"] = offset
+            result = tg_request("getUpdates", params)
             if not result or not result.get("ok"):
                 time.sleep(5)
                 continue
@@ -301,7 +307,7 @@ def main():
                 msg_id = msg.get("message_id")
                 text = (msg.get("text") or "").strip()
                 if text:
-                    process_command(chat_id, msg_id, text)
+                    process_message(chat_id, msg_id, text)
 
         except KeyboardInterrupt:
             print("\n\n👋 已停止!")
