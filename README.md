@@ -1,8 +1,6 @@
-# AI Listing Writer
+# AI Listing Writer - Telegram Bot
 
-✍️ AI-powered e-commerce product listing generator for Telegram.
-
-Generate professional product listings for **6 platforms** with one message.
+✍️ AI-powered e-commerce product listing generator for **6 platforms**.
 
 [English](#english) | [中文](#中文)
 
@@ -21,12 +19,11 @@ Generate professional product listings for **6 platforms** with one message.
 
 ### Features
 
-- ✅ 6 platform-specific listing templates
+- ✅ One command, full listing — title, bullets, description, keywords, all at once
 - ✅ Auto language detection (Chinese/English)
-- ✅ SEO-optimized output
-- ✅ TikTok short video script generation
-- ✅ Compatible with any OpenAI-compatible API
-- ✅ Works in private chats and groups
+- ✅ Platform-specific SEO optimization
+- ✅ TikTok Shop: includes 15-second video script
+- ✅ Compatible with any OpenAI-compatible API (GPT-4o, Claude, DeepSeek, etc.)
 
 ### Quick Start
 
@@ -34,7 +31,7 @@ Generate professional product listings for **6 platforms** with one message.
 git clone https://github.com/YOUR_USERNAME/AI-Listing-Writer.git
 cd AI-Listing-Writer
 cp .env.example .env
-# Edit .env with your credentials
+# Edit .env
 pip install -r requirements.txt
 python bot.py
 ```
@@ -42,14 +39,13 @@ python bot.py
 ### Usage
 
 ```
-# Method 1: Platform + Product
-amazon wireless earbuds noise cancelling
-shopee 蓝牙耳机 主动降噪
-
-# Method 2: Select platform first
-/amazon → then type product description
-/shopee → then type product description
+/amazon bluetooth earbuds noise cancelling
+/shopee 蓝牙耳机 主动降噪 运动防水
+/tiktok 网红同款手机壳 ins风
+/lazada wireless mouse ergonomic
 ```
+
+Or just type: `amazon wireless speaker` — platform + product in one line.
 
 ### Environment Variables
 
@@ -74,26 +70,19 @@ MIT
 
 ### 使用方法
 
-发送: `平台名 产品描述`
+发送 `/平台名 产品描述` 即可：
 
 ```
-amazon bluetooth speaker waterproof
-shopee 无线鼠标 静音 办公
-tiktok 网红同款手机壳 ins风
-lazada portable charger 20000mah
-独立站 premium yoga mat eco-friendly
+/amazon 蓝牙音箱 防水 便携
+/shopee wireless earbuds TWS
+/tiktok 网红零食 辣条 大包装
 ```
 
-### 部署
-
-```bash
-pip install -r requirements.txt
-python bot.py
-```
+自动检测中英文，生成对应语言的listing。
 
 ---
 
 ## 🔗 More Tools
 
-- [MultiAffiliateTGBot](https://github.com/YOUR_USERNAME/MultiAffiliateTGBot) - Multi-platform affiliate link bot
-- [Amazon-SP-API-Python](https://github.com/YOUR_USERNAME/Amazon-SP-API-Python) - Amazon SP-API client
+- [MultiAffiliateTGBot](https://github.com/YOUR_USERNAME/MultiAffiliateTGBot) - 5-platform affiliate link bot
+- [Amazon-SP-API-Python](https://github.com/YOUR_USERNAME/Amazon-SP-API-Python) - Modern Amazon SP-API client
