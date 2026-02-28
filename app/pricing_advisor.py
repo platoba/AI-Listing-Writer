@@ -201,6 +201,9 @@ def anchor_price(price: float, markup_pct: float = 40) -> tuple[float, float]:
         anchor = math.ceil(anchor) - 0.01  # e.g. 49.99
     else:
         anchor = round(anchor / 10) * 10  # e.g. 200
+    # Ensure anchor is at least the sale price
+    if anchor < price:
+        anchor = price
     return (anchor, price)
 
 

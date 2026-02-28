@@ -103,8 +103,8 @@ class ReadabilityDelta:
     def readability_improved(self) -> bool:
         # Shorter sentences = generally more readable for product listings
         if self.old_avg_sentence_len == 0:
-            return True
-        return self.new_avg_sentence_len <= self.old_avg_sentence_len
+            return self.new_avg_sentence_len > 0  # Only improved if new text exists
+        return self.new_avg_sentence_len < self.old_avg_sentence_len  # Strict improvement
 
 
 @dataclass

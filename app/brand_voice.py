@@ -256,9 +256,15 @@ def detect_tone(text: str) -> dict[str, float]:
     for tone, langs in TONE_INDICATORS.items():
         indicators = set(langs.get("en", []) + langs.get("cn", []))
         matches = words & {w.lower() for w in indicators}
-        # Also check multi-word phrases
+        # Also check multi-word phrases AND CJK substring matches
         phrase_matches = sum(1 for ind in indicators if ' ' in ind and ind.lower() in text_lower)
-        hit_count = len(matches) + phrase_matches
+        # Chinese indicators may appear as substrings within larger tokens
+        cn_indicators = set(langs.get("cn", []))
+        cn_substring_matches = sum(
+            1 for ind in cn_indicators
+            if ind not in matches and ind in text_lower
+        )
+        hit_count = len(matches) + phrase_matches + cn_substring_matches
         # Normalize to 0-1 range, with diminishing returns
         raw_score = hit_count / max(len(indicators), 1)
         scores[tone.value] = min(raw_score * 3, 1.0)  # Scale up, cap at 1.0
