@@ -29,7 +29,12 @@ from app.history import HistoryStore
 from app.export import export_records
 from app.keywords import extract_keywords, suggest_keywords_ai, keyword_density
 
-config.validate()
+def _ensure_config():
+    """Validate config on first real use, not on import."""
+    config.validate()
+
+
+_config_validated = False
 
 API_URL = f"https://api.telegram.org/bot{config.BOT_TOKEN}"
 store = HistoryStore(config.REDIS_URL, config.MAX_HISTORY)
@@ -380,8 +385,9 @@ def process_message(chat_id: int, msg_id: int, text: str):
 
 
 def main():
+    _ensure_config()
     print(f"\n{'=' * 50}")
-    print(f"  AI Listing Writer v2.0")
+    print(f"  AI Listing Writer v3.0")
     print(f"  Model: {config.OPENAI_MODEL}")
     print(f"  Platforms: {len(PLATFORMS)}")
     print(f"  Redis: {'✅' if store.redis else '❌ (in-memory fallback)'}")
