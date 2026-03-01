@@ -1,6 +1,6 @@
 [project]
 name = "ai-listing-writer"
-version = "6.0.0"
+version = "7.0.0"
 description = "AI-powered multi-platform e-commerce listing generator with SEO optimization, health monitoring, trend analysis, and cross-platform migration"
 readme = "README.md"
 license = {text = "MIT"}

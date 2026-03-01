@@ -198,7 +198,8 @@ class TestReadabilityAnalyzer:
 
     def test_analyze_whitespace_only(self, analyzer):
         report = analyzer.analyze("   \n  \t  ")
-        assert report.text_length > 0
+        assert report.text_length == 0
+        assert any("no text" in r.lower() for r in report.recommendations)
 
     def test_flesch_reading_ease(self, analyzer, simple_text):
         report = analyzer.analyze(simple_text)

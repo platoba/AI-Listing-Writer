@@ -99,10 +99,17 @@ def _count_syllables_cn(text: str) -> int:
 
 
 def _is_chinese(text: str) -> bool:
-    """Detect if text is primarily Chinese."""
+    """Detect if text is primarily Chinese.
+
+    Each CJK character carries ~2-3 English words worth of information,
+    so even a minority of Chinese characters means the content is CJK-dominant.
+    We treat text as Chinese if CJK chars represent ≥20% of meaningful chars.
+    """
     cn = len(re.findall(r'[\u4e00-\u9fff]', text))
-    en = len(re.findall(r'[a-zA-Z]', text))
-    return cn > en
+    total = len(re.findall(r'[\u4e00-\u9fffa-zA-Z]', text))
+    if total == 0:
+        return False
+    return cn / total >= 0.2
 
 
 # ── Text Tokenization ─────────────────────────────────────

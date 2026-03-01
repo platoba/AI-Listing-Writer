@@ -412,6 +412,7 @@ class CategoryOptimizer:
                 platform=platform,
                 primary=CategoryMatch(category="Uncategorized", confidence=0),
                 warnings=["Could not determine category. Please set manually."],
+                tips=["Low confidence — try adding more descriptive keywords to your title and description."],
             )
 
         # Map to platform-specific names
@@ -649,6 +650,13 @@ class CategoryOptimizer:
         for cat in categories:
             if query_lower in cat or cat in query_lower:
                 return cat
+        # Try prefix/stem overlap (e.g. "electronic" matches "electronics")
+        for cat in categories:
+            min_len = min(len(query_lower), len(cat))
+            prefix = min_len - 2  # allow 2-char difference
+            if prefix >= 4:
+                if query_lower[:prefix] in cat or cat[:prefix] in query_lower:
+                    return cat
         # Try word overlap
         query_words = set(query_lower.split())
         best = None
@@ -656,6 +664,13 @@ class CategoryOptimizer:
         for cat in categories:
             cat_words = set(cat.split())
             overlap = len(query_words & cat_words)
+            # Also check stem overlap (words sharing 4+ char prefix)
+            if overlap == 0:
+                for qw in query_words:
+                    for cw in cat_words:
+                        stem = min(len(qw), len(cw)) - 1
+                        if stem >= 4 and qw[:stem] == cw[:stem]:
+                            overlap += 0.5
             if overlap > best_overlap:
                 best_overlap = overlap
                 best = cat
