@@ -183,3 +183,44 @@ docker compose up -d
 - [MultiAffiliateTGBot](https://github.com/platoba/MultiAffiliateTGBot) - 5-platform affiliate link bot
 - [Amazon-SP-API-Python](https://github.com/platoba/Amazon-SP-API-Python) - Modern Amazon SP-API client
 - [Shopify-Scout](https://github.com/platoba/Shopify-Scout) - AI product research tool
+
+## v3.1 New Features (2026-03-02)
+
+### 🎯 Competitor Analysis & A/B Testing
+
+- **`/competitor <url1> [url2] [url3]`** — Analyze competitor listings from Amazon (ASIN) and Shopee
+  - Extract title, price, rating, reviews, bullets, keywords
+  - Generate market benchmarks (avg price, rating, keyword frequency)
+  - Identify missing keywords and optimization opportunities
+
+- **`/abtest`** — AI-powered A/B test recommendations
+  - **Title variants**: keyword injection, length optimization, numeric callouts
+  - **Bullet variants**: pain-point reordering, social proof elements
+  - **Price tests**: market matching, premium positioning, bundle strategies
+  - 4-week test roadmap with traffic split recommendations
+
+### Architecture
+
+```
+app/
+├── competitor_analyzer.py    # Scrape & parse competitor data
+├── ab_test_advisor.py         # Generate A/B test variants
+└── handlers/
+    └── competitor.py          # Telegram command handlers
+```
+
+### Example Usage
+
+```bash
+# Analyze 3 Amazon competitors
+/competitor B08N5WRWNW B07VGRJDFY B09XYZ123
+
+# Generate A/B test plan based on analysis
+/abtest
+```
+
+### Dependencies
+
+- `httpx` — async HTTP client for scraping
+- `beautifulsoup4` — HTML parsing
+- Proxy support via `PROXY_URL` env var (recommended for Amazon)
