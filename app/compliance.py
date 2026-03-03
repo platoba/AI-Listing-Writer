@@ -481,7 +481,7 @@ class ComplianceChecker:
         for field_name in rules.required_fields:
             report.checked_rules += 1
             # Normalize field matching
-            field_variants = [field, field.replace("_", " "), field.replace(" ", "_")]
+            field_variants = [field_name, field_name.replace("_", " "), field.replace(" ", "_")]
             found = False
             for variant in field_variants:
                 if variant in listing and listing[variant].strip():
