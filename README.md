@@ -1,226 +1,253 @@
-# AI Listing Writer v3.0 - Telegram Bot
+<div align="center">
+
+# ✍️ AI Listing Writer
+
+### AI-Powered E-Commerce Product Listing Generator for 8 Major Platforms
 
 [![CI](https://github.com/platoba/AI-Listing-Writer/actions/workflows/ci.yml/badge.svg)](https://github.com/platoba/AI-Listing-Writer/actions)
+[![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Telegram](https://img.shields.io/badge/Telegram-Bot-blue?logo=telegram)](https://core.telegram.org/bots)
 
-✍️ AI-powered e-commerce product listing generator for **8 platforms**.
+[🌟 Features](#-features) • [🚀 Quick Start](#-quick-start) • [📖 Platforms](#-supported-platforms) • [💡 Examples](#-usage-examples)
 
-[English](#english) | [中文](#中文)
+</div>
 
-## English
+---
 
-### Supported Platforms
+## ✨ Features
 
-| Platform | Output | Language |
-|----------|--------|----------|
-| 🛒 Amazon | Title + 5 Bullets + Description + Search Terms | EN/CN |
-| 🧡 Shopee | 标题 + 描述 + 标签 + 规格 | EN/CN |
-| 💜 Lazada | Title + Short/Long Description + Keywords | EN/CN |
-| 🔴 AliExpress | Title + Description + Keywords + USPs | EN/CN |
-| 🎵 TikTok Shop | 标题 + 卖点 + 描述 + 短视频脚本 | EN/CN |
-| 🌐 Shopify/独立站 | SEO Title + Meta + Description + FAQ | EN/CN |
-| 🏷️ eBay | Title + Item Specifics + Description + Shipping | EN/CN |
-| 🔵 Walmart | Product Name + Features + Descriptions + Attributes | EN/CN |
+<table>
+<tr>
+<td width="50%">
 
-### v3.0 New Features
+### 🎯 Core Features
+- ✅ **8 Platform Support** - Amazon, Shopee, Lazada, AliExpress, TikTok Shop, Shopify, eBay, Walmart
+- ✅ **Batch Generation** - Generate listings for all platforms at once
+- ✅ **SEO Optimization** - Built-in keyword density analysis
+- ✅ **Multi-Language** - English & Chinese support
 
-- ⚖️ **Compare Mode** — `/compare product` generates and compares listings across platforms with AI analysis
-- 🔍 **Keyword Research** — `/keywords product` AI-powered SEO keyword suggestions (primary, long-tail, trending, negative)
-- 📦 **Export** — `/export csv|json|txt|html` export generation history in multiple formats
-- 🏗️ **Keyword Density** — built-in keyword density analysis for SEO optimization
-- 🧪 **40+ Tests** — comprehensive test coverage for all modules
+</td>
+<td width="50%">
 
-### v2.0 Features
+### 🔥 Advanced Features
+- 🚀 **Compare Mode** - AI-powered cross-platform comparison
+- 🚀 **Keyword Research** - Smart SEO keyword suggestions
+- 🚀 **Listing Optimizer** - Improve existing listings
+- 🚀 **Export** - CSV, JSON, TXT, HTML formats
 
-- 🚀 **Batch Mode** — `/all product` generates listings for all 8 platforms at once
-- 🔧 **Optimize** — `/optimize` analyzes and improves existing listings
-- 🌍 **Translate** — `/translate zh` translates listings while preserving SEO structure
-- 📋 **History** — `/history` view your recent generations
-- 📊 **Stats** — `/stats` usage statistics by platform
-- ⚡ **Rate Limiting** — configurable per-minute limits
-- 🔄 **Retry Logic** — automatic retry on API failures with exponential backoff
-- 🐳 **Docker Compose** — one-command deployment with Redis persistence
-- 🏗️ **Modular Architecture** — clean separation: config / platforms / AI engine / history
+</td>
+</tr>
+</table>
 
-### Quick Start
+---
+
+## 🛒 Supported Platforms
+
+| Platform | Output Format | Languages |
+|----------|--------------|-----------|
+| 🛒 **Amazon** | Title + 5 Bullets + Description + Search Terms | EN/CN |
+| 🧡 **Shopee** | 标题 + 描述 + 标签 + 规格 | EN/CN |
+| 💜 **Lazada** | Title + Short/Long Description + Keywords | EN/CN |
+| 🔴 **AliExpress** | Title + Description + Keywords + USPs | EN/CN |
+| 🎵 **TikTok Shop** | 标题 + 卖点 + 描述 + 短视频脚本 | EN/CN |
+| 🌐 **Shopify** | SEO Title + Meta + Description + FAQ | EN/CN |
+| 🏷️ **eBay** | Title + Item Specifics + Description + Shipping | EN/CN |
+| 🔵 **Walmart** | Product Name + Features + Descriptions + Attributes | EN/CN |
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
 
 ```bash
+- Python 3.9+
+- Redis (optional, for history)
+- Telegram Bot Token
+- OpenAI API Key (or compatible endpoint)
+```
+
+### Installation
+
+```bash
+# Clone the repository
 git clone https://github.com/platoba/AI-Listing-Writer.git
 cd AI-Listing-Writer
-cp .env.example .env
-# Edit .env with your tokens
-```
 
-**Option A: Docker Compose (recommended)**
-```bash
-docker compose up -d
-```
-
-**Option B: Direct**
-```bash
+# Install dependencies
 pip install -r requirements.txt
+
+# Configure environment
+cp .env.example .env
+# Edit .env with your tokens:
+# - TELEGRAM_BOT_TOKEN
+# - OPENAI_API_KEY
+# - OPENAI_BASE_URL (optional)
+
+# Run the bot
 python bot.py
 ```
 
-### Usage
+### Docker (Recommended)
+
+```bash
+# One-command deployment with Redis
+docker-compose up -d
+
+# View logs
+docker-compose logs -f bot
+```
+
+---
+
+## 💡 Usage Examples
+
+### Basic Usage
 
 ```
-/amazon bluetooth earbuds noise cancelling
-/shopee 蓝牙耳机 主动降噪 运动防水
-/tiktok 网红同款手机壳 ins风
-/ebay vintage leather wallet handmade
-/walmart kids water bottle BPA free
+/amazon wireless earbuds
+```
 
-# Batch: all platforms at once
-/all wireless earbuds premium
+Generates a complete Amazon listing with:
+- SEO-optimized title
+- 5 compelling bullet points
+- Detailed description
+- Backend search terms
 
-# Compare across platforms
-/compare bluetooth speaker waterproof
+### Batch Mode
 
-# Keyword research
-/keywords amazon wireless earbuds
-/keywords shopee 蓝牙耳机
+```
+/all bluetooth speaker
+```
 
-# Export history
-/export csv
-/export json
+Generates listings for **all 8 platforms** at once with platform-specific optimizations.
 
-# Optimize existing listing
+### Compare Mode
+
+```
+/compare running shoes
+```
+
+AI analyzes and compares listings across platforms, highlighting:
+- Best title structure
+- Most effective keywords
+- Platform-specific strengths
+
+### Keyword Research
+
+```
+/keywords yoga mat
+```
+
+Returns:
+- 🎯 Primary keywords (high volume, high relevance)
+- 🔍 Long-tail keywords (low competition)
+- 📈 Trending keywords
+- ❌ Negative keywords to avoid
+
+### Optimize Existing Listing
+
+```
 /optimize
-(paste your listing)
-
-# Translate
-/translate zh
-(paste English listing → Chinese)
+[paste your existing listing]
 ```
 
-### Architecture
+AI analyzes and suggests improvements for:
+- Keyword density
+- Readability
+- SEO structure
+- Call-to-action
+
+---
+
+## 🏗️ Architecture
 
 ```
 AI-Listing-Writer/
 ├── app/
-│   ├── __init__.py        # Version
-│   ├── config.py          # Environment config
-│   ├── platforms.py       # 8 platform templates
-│   ├── ai_engine.py       # AI generation + retry + optimize + translate
-│   ├── history.py         # Redis/in-memory history + rate limiting
-│   ├── export.py          # Export to CSV/JSON/TXT/HTML
-│   └── keywords.py        # Keyword extraction + AI suggestions + density
-├── bot.py                 # Main bot entry point
-├── tests/
-│   ├── test_bot.py        # Bot command + integration tests
-│   ├── test_export.py     # Export format tests
-│   └── test_keywords.py   # Keyword analysis tests
-├── docker-compose.yml     # Bot + Redis
-├── Dockerfile
-├── Makefile               # Common operations
-├── .github/workflows/ci.yml
-└── .env.example
-```
-
-### Environment Variables
-
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `BOT_TOKEN` | ✅ | — | Telegram Bot Token |
-| `OPENAI_API_KEY` | ✅ | — | OpenAI API key (or compatible) |
-| `OPENAI_BASE_URL` | ❌ | openai.com | Custom API endpoint |
-| `OPENAI_MODEL` | ❌ | gpt-4o-mini | Model name |
-| `REDIS_URL` | ❌ | localhost:6379 | Redis connection (falls back to in-memory) |
-| `RATE_LIMIT_PER_MIN` | ❌ | 10 | Max requests per user per minute |
-| `AI_TEMPERATURE` | ❌ | 0.7 | Generation creativity |
-| `AI_MAX_TOKENS` | ❌ | 2000 | Max output tokens |
-
-### License
-
-MIT
-
----
-
-## 中文
-
-### AI电商Listing文案生成器 v3.0
-
-一个Telegram机器人，用AI为8大电商平台生成专业的产品listing文案。
-
-### v3.0 新功能
-
-- ⚖️ **对比模式** — `/compare 产品` 多平台listing对比+AI分析
-- 🔍 **关键词研究** — `/keywords 产品` AI关键词建议（主词/长尾/趋势/否定词）
-- 📦 **导出功能** — `/export csv|json|txt|html` 多格式导出生成记录
-- 🧪 **40+测试** — 全模块测试覆盖
-
-### v2.0 新功能
-
-- 🚀 **批量模式** — `/all 产品` 一键生成全平台listing
-- 🔧 **优化模式** — `/optimize` 分析并改进已有listing
-- 🌍 **翻译模式** — `/translate en` 保持SEO结构翻译
-- 📋 **历史记录** — `/history` 查看最近生成
-- 📊 **使用统计** — `/stats` 按平台统计
-- 🏷️ **新增eBay** — 标题+物品属性+描述+物流建议
-- 🔵 **新增Walmart** — 产品名+特性+描述+属性
-
-### 使用方法
-
-```
-/amazon 蓝牙音箱 防水 便携
-/shopee wireless earbuds TWS
-/tiktok 网红零食 辣条 大包装
-/all 无线鼠标 静音 办公
-```
-
-### Docker一键部署
-
-```bash
-cp .env.example .env
-# 编辑 .env 填入 BOT_TOKEN 和 OPENAI_API_KEY
-docker compose up -d
+│   ├── config.py           # Configuration management
+│   ├── ai_engine.py        # OpenAI integration
+│   ├── history.py          # Redis-based history
+│   ├── platforms/          # Platform-specific generators
+│   │   ├── amazon.py
+│   │   ├── shopee.py
+│   │   └── ...
+│   └── utils/
+│       ├── keywords.py     # Keyword research
+│       └── export.py       # Export utilities
+├── tests/                  # 40+ test cases
+├── bot.py                  # Telegram bot entry point
+└── docker-compose.yml      # Docker deployment
 ```
 
 ---
 
-## 🔗 More Tools
+## 📊 Commands Reference
 
-- [MultiAffiliateTGBot](https://github.com/platoba/MultiAffiliateTGBot) - 5-platform affiliate link bot
-- [Amazon-SP-API-Python](https://github.com/platoba/Amazon-SP-API-Python) - Modern Amazon SP-API client
-- [Shopify-Scout](https://github.com/platoba/Shopify-Scout) - AI product research tool
+| Command | Description |
+|---------|-------------|
+| `/start` | Welcome message & help |
+| `/amazon <product>` | Generate Amazon listing |
+| `/shopee <product>` | Generate Shopee listing |
+| `/all <product>` | Generate for all 8 platforms |
+| `/compare <product>` | Compare listings across platforms |
+| `/keywords <product>` | AI keyword research |
+| `/optimize` | Improve existing listing |
+| `/translate <lang>` | Translate listing (zh/en) |
+| `/history` | View recent generations |
+| `/stats` | Usage statistics |
+| `/export <format>` | Export history (csv/json/txt/html) |
 
-## v3.1 New Features (2026-03-02)
+---
 
-### 🎯 Competitor Analysis & A/B Testing
-
-- **`/competitor <url1> [url2] [url3]`** — Analyze competitor listings from Amazon (ASIN) and Shopee
-  - Extract title, price, rating, reviews, bullets, keywords
-  - Generate market benchmarks (avg price, rating, keyword frequency)
-  - Identify missing keywords and optimization opportunities
-
-- **`/abtest`** — AI-powered A/B test recommendations
-  - **Title variants**: keyword injection, length optimization, numeric callouts
-  - **Bullet variants**: pain-point reordering, social proof elements
-  - **Price tests**: market matching, premium positioning, bundle strategies
-  - 4-week test roadmap with traffic split recommendations
-
-### Architecture
-
-```
-app/
-├── competitor_analyzer.py    # Scrape & parse competitor data
-├── ab_test_advisor.py         # Generate A/B test variants
-└── handlers/
-    └── competitor.py          # Telegram command handlers
-```
-
-### Example Usage
+## 🧪 Testing
 
 ```bash
-# Analyze 3 Amazon competitors
-/competitor B08N5WRWNW B07VGRJDFY B09XYZ123
+# Run all tests
+pytest
 
-# Generate A/B test plan based on analysis
-/abtest
+# Run with coverage
+pytest --cov=app --cov-report=html
+
+# Run specific test
+pytest tests/test_platforms.py -v
 ```
 
-### Dependencies
+---
 
-- `httpx` — async HTTP client for scraping
-- `beautifulsoup4` — HTML parsing
-- Proxy support via `PROXY_URL` env var (recommended for Amazon)
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- Built with [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot)
+- Powered by OpenAI API
+- Inspired by e-commerce best practices
+
+---
+
+<div align="center">
+
+Made with ❤️ for E-Commerce Sellers
+
+⭐ Star this repo if you find it helpful!
+
+[Report Bug](https://github.com/platoba/AI-Listing-Writer/issues) • [Request Feature](https://github.com/platoba/AI-Listing-Writer/issues)
+
+</div>
