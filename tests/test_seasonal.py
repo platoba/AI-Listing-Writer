@@ -2,7 +2,7 @@
 import pytest
 from datetime import date
 from app.seasonal import (
-    SeasonalOptimizer, SeasonalKeywordSuggestion, SeasonalOptimization,
+    SeasonalOptimizer, SeasonalOptimization,
     optimize_for_season, format_seasonal_report,
     SEASONAL_KEYWORDS, SHOPPING_EVENTS, CATEGORY_SEASONALITY,
 )

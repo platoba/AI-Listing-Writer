@@ -286,7 +286,7 @@ def check_sentence_lengths(text: str, max_len: int, min_len: int) -> list[BrandV
                 severity="warning",
                 message=f"Sentence {i+1} too long ({word_count} words, max {max_len})",
                 location=f"sentence_{i+1}",
-                suggestion=f"Break into shorter sentences for readability",
+                suggestion="Break into shorter sentences for readability",
             ))
         elif 0 < word_count < min_len:
             violations.append(BrandViolation(

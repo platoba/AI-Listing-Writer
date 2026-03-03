@@ -1,7 +1,7 @@
 """Tests for image_optimizer module."""
 import pytest
 from app.image_optimizer import (
-    ImageInfo, ImageIssue, AltTextSuggestion, ImageOptimization,
+    ImageInfo, ImageIssue, ImageOptimization,
     ImageOptimizer, analyze_listing_images, format_image_report,
     IMAGE_TYPES, PLATFORM_REQUIREMENTS,
 )

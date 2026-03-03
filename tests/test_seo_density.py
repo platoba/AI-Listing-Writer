@@ -1,12 +1,11 @@
 """Tests for SEO Density Analyzer."""
-import pytest
 from app.seo_density import (
     analyze_density,
     format_density_report,
-    KeywordDensity, NGramResult, DensityReport,
+    DensityReport,
     _tokenize, _extract_ngrams, _extract_sections,
     _compute_tf_idf, _suggest_lsi_keywords,
-    PLATFORM_DENSITY, LSI_CLUSTERS,
+    PLATFORM_DENSITY,
 )
 
 

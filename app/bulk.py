@@ -45,7 +45,7 @@ class BulkResult:
     def summary(self) -> str:
         total = len(self.items)
         lines = [
-            f"📦 Bulk Processing Complete",
+            "📦 Bulk Processing Complete",
             f"   Total products: {total}",
             f"   ✅ Generated: {self.total_generated}",
             f"   ❌ Failed: {self.total_failed}",

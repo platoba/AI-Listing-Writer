@@ -10,7 +10,6 @@ into a single A-F grade with detailed breakdown:
 - Mobile optimization readiness
 """
 import re
-import math
 from dataclasses import dataclass, field
 from typing import Optional
 

@@ -3,9 +3,7 @@
 Goes beyond simple translation — adapts listings for cultural norms,
 search behavior, and platform conventions in each market.
 """
-import re
 from dataclasses import dataclass, field
-from typing import Optional
 
 from app.ai_engine import call_ai
 

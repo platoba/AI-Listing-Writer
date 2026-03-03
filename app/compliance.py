@@ -478,7 +478,7 @@ class ComplianceChecker:
 
     def _check_required_fields(self, listing: dict, rules: PlatformRules,
                                 report: ComplianceReport) -> None:
-        for field in rules.required_fields:
+        for field_name in rules.required_fields:
             report.checked_rules += 1
             # Normalize field matching
             field_variants = [field, field.replace("_", " "), field.replace(" ", "_")]

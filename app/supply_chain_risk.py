@@ -17,13 +17,12 @@ Features:
 from __future__ import annotations
 
 import re
-import math
 import sqlite3
 import json
 from dataclasses import dataclass, field, asdict
 from enum import Enum
 from typing import Optional
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 # ---------------------------------------------------------------------------
@@ -237,7 +236,7 @@ class SupplyChainReport:
 
     def summary(self) -> str:
         lines = [
-            f"═══ Supply Chain Risk Report ═══",
+            "═══ Supply Chain Risk Report ═══",
             f"Overall Risk: {self.overall_score:.0f}/100 ({self.overall_level.upper()})",
             f"Resilience Score: {self.resilience_score:.0f}/100",
             f"Risk Factors: {len(self.risk_factors)}",
@@ -853,7 +852,7 @@ class SupplyChainRiskAnalyzer:
                 "First Sale Rule for customs valuation",
                 "Tariff engineering (HTS classification optimization)",
                 "Foreign Trade Zone (FTZ) benefits",
-                f"Shift sourcing to lower-tariff origins" if tariff_risk > 40 else
+                "Shift sourcing to lower-tariff origins" if tariff_risk > 40 else
                 "Current origin has favorable tariff status",
             ],
         }

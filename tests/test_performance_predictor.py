@@ -1,8 +1,7 @@
 """Tests for Performance Predictor."""
-import pytest
 from app.performance_predictor import (
     PerformancePredictor,
-    PerformancePrediction, SignalScore, PerformanceTier,
+    PerformancePrediction, PerformanceTier,
     predict_performance,
 )
 

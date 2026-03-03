@@ -1,8 +1,7 @@
 """Tests for Return Rate Estimator."""
-import pytest
 from app.return_estimator import (
     ReturnRateEstimator,
-    ReturnEstimate, ReturnFactor, ReturnRisk,
+    ReturnEstimate, ReturnRisk,
     estimate_returns,
 )
 

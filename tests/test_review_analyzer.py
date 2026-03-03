@@ -1,9 +1,8 @@
 """Tests for review_analyzer module."""
 import pytest
-from datetime import datetime
 from app.review_analyzer import (
     ReviewItem, ReviewAnalyzer, SentimentResult, PainPoint,
-    FeatureRequest, BuyerKeyword, ReviewInsights,
+    ReviewInsights,
     analyze_reviews, format_review_report,
 )
 

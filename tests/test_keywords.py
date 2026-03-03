@@ -1,8 +1,6 @@
 """Tests for keywords module."""
 import os
 import sys
-import pytest
-from unittest.mock import patch, MagicMock
 
 os.environ.setdefault("BOT_TOKEN", "test-token-123")
 os.environ.setdefault("OPENAI_API_KEY", "sk-test-key")

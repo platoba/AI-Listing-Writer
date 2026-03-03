@@ -4,7 +4,7 @@ from app.listing_diff import (
     parse_sections, count_words, avg_sentence_length,
     extract_keyword_set, keyword_density,
     diff_listings, diff_to_dict, diff_summary_text,
-    SectionDiff, ChangeType, ImpactLevel, KeywordDelta, ReadabilityDelta,
+    SectionDiff, ChangeType, KeywordDelta, ReadabilityDelta,
     ListingDiffResult,
 )
 

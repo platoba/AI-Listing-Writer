@@ -13,7 +13,6 @@ Usage:
 """
 import argparse
 import sys
-import json
 
 
 def cmd_generate(args):

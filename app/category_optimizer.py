@@ -12,7 +12,6 @@ Features:
 - Subcategory recommendation engine
 """
 
-import re
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -44,7 +43,7 @@ class CrossPlatformMapping:
 
     def summary(self) -> str:
         lines = [
-            f"🗂️ Cross-Platform Category Mapping",
+            "🗂️ Cross-Platform Category Mapping",
             f"Source: {self.source_platform} → {self.source_category}",
             "",
         ]

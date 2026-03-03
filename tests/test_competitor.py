@@ -1,8 +1,6 @@
 """Tests for competitor listing analyzer."""
-import pytest
 from app.competitor import (
     CompetitorAnalyzer, CompetitorProfile, ExtractedKeywords,
-    GapAnalysisResult, CompetitorComparison,
     EMOTION_WORDS, URGENCY_WORDS, TRUST_WORDS, STOP_WORDS,
 )
 

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import math
-import re
 import sqlite3
 import json
 from dataclasses import dataclass, field, asdict

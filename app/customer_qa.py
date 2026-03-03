@@ -19,7 +19,6 @@ from __future__ import annotations
 import re
 import sqlite3
 import json
-import hashlib
 from dataclasses import dataclass, field, asdict
 from enum import Enum
 from typing import Optional

@@ -3,11 +3,6 @@
 import pytest
 from app.keyword_cannibalization import (
     KeywordCannibalizationDetector,
-    ListingKeywords,
-    CannibalizationPair,
-    KeywordCluster,
-    AllocationSuggestion,
-    CannibalizationReport,
     STOP_WORDS,
 )
 

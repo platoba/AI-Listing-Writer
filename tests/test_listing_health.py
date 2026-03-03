@@ -1,10 +1,7 @@
 """Tests for listing_health module."""
 
-import json
 import sqlite3
-import tempfile
 from datetime import datetime
-from unittest.mock import patch
 
 import pytest
 

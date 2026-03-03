@@ -8,10 +8,8 @@ Analyzes product listing images for:
 - A+ content image analysis
 - Competitor image benchmarking
 """
-import re
 from dataclasses import dataclass, field
 from typing import Optional
-from urllib.parse import urlparse
 
 
 # Image type classifications

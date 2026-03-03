@@ -4,7 +4,6 @@ Converts listing formats, adapts content, maps categories,
 handles platform-specific requirements, and validates compatibility.
 """
 
-import json
 import re
 from dataclasses import dataclass, field, asdict
 from datetime import datetime

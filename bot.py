@@ -15,19 +15,17 @@ Features:
 - Rate limiting + Redis persistence
 """
 
-import os
 import re
 import time
-import json
 import requests
 import threading
 
 from app.config import config
-from app.platforms import PLATFORMS, get_platform, list_platforms
+from app.platforms import PLATFORMS, list_platforms
 from app.ai_engine import call_ai, optimize_listing, translate_listing
 from app.history import HistoryStore
 from app.export import export_records
-from app.keywords import extract_keywords, suggest_keywords_ai, keyword_density
+from app.keywords import suggest_keywords_ai
 
 def _ensure_config():
     """Validate config on first real use, not on import."""
@@ -387,7 +385,7 @@ def process_message(chat_id: int, msg_id: int, text: str):
 def main():
     _ensure_config()
     print(f"\n{'=' * 50}")
-    print(f"  AI Listing Writer v3.0")
+    print("  AI Listing Writer v3.0")
     print(f"  Model: {config.OPENAI_MODEL}")
     print(f"  Platforms: {len(PLATFORMS)}")
     print(f"  Redis: {'✅' if store.redis else '❌ (in-memory fallback)'}")

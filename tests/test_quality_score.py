@@ -1,5 +1,4 @@
 """Tests for quality_score module."""
-import pytest
 
 from app.quality_score import (
     DEFAULT_WEIGHTS,

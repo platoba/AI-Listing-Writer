@@ -2,8 +2,7 @@
 import pytest
 from app.readability import (
     ReadabilityAnalyzer, ReadabilityLevel, AudienceType,
-    ReadabilityReport, ReadabilityIndex, VocabularyStats, SentenceStats,
-    analyze_readability,
+    ReadabilityReport, analyze_readability,
     _count_syllables_en, _count_syllables_cn, _is_chinese,
     _tokenize_sentences, _tokenize_words, _count_complex_words,
     PLATFORM_TARGETS,

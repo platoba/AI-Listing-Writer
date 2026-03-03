@@ -3,15 +3,11 @@
 import pytest
 
 from app.migration import (
-    BatchMigrationReport,
-    CATEGORY_MAPPINGS,
     FieldMapping,
     ListingMigrator,
     MigrationIssue,
-    MigrationResult,
     MigrationStatus,
     Platform,
-    PlatformSpec,
     PLATFORM_SPECS,
 )
 

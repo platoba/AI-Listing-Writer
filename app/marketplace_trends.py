@@ -4,14 +4,11 @@ Provides cross-platform trend detection, keyword velocity scoring,
 seasonal pattern recognition, and niche opportunity discovery.
 """
 
-import hashlib
 import json
 import sqlite3
-import time
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timedelta
 from enum import Enum
-from pathlib import Path
 from typing import Optional
 
 

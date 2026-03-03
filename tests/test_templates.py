@@ -1,8 +1,6 @@
 """Tests for category template engine."""
-import pytest
 from app.templates import (
-    Category, TemplateEngine, CategoryTemplate,
-    PowerWords, CATEGORY_TEMPLATES,
+    Category, TemplateEngine, CATEGORY_TEMPLATES,
 )
 
 

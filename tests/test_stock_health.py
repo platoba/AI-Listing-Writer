@@ -1,8 +1,7 @@
 """Tests for stock_health inventory analyzer."""
 import pytest
 from app.stock_health import (
-    SalesData, StockStatus, DemandTrend, StockHealthReport,
-    calculate_velocity, detect_demand_trend,
+    SalesData, StockStatus, DemandTrend, calculate_velocity, detect_demand_trend,
     calculate_reorder_point, calculate_eoq,
     analyze_stock_health, analyze_portfolio, portfolio_report_text,
 )

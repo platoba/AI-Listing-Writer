@@ -1,5 +1,4 @@
 """Tests for Review Response Generator."""
-import pytest
 from app.review_response import (
     ReviewResponseGenerator,
     Review, ReviewResponse,

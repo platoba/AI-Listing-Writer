@@ -1,8 +1,7 @@
 """
 A/B测试顾问模块测试
 """
-import pytest
-from app.ab_test_advisor import ABTestAdvisor, ABTestVariant
+from app.ab_test_advisor import ABTestAdvisor
 
 
 def test_generate_title_variants():

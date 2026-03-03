@@ -1,5 +1,4 @@
 """Tests for review_to_listing module."""
-import pytest
 
 from app.review_to_listing import (
     ExtractedBenefit,

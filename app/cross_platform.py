@@ -13,7 +13,6 @@ Handles character limits, formatting rules, and platform-specific best practices
 import re
 import html
 from dataclasses import dataclass, field
-from typing import Optional
 from enum import Enum
 
 

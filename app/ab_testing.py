@@ -3,8 +3,6 @@
 Generates multiple listing variants with different angles, tones,
 and structures for split testing and conversion optimization.
 """
-import re
-import json
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -249,11 +247,11 @@ def _select_angles(platform: str, count: int) -> list[str]:
 def _generate_recommendations(plan: ABTestPlan) -> str:
     """Generate test execution recommendations."""
     lines = [
-        f"1. Run each variant for minimum 7 days or 1000 impressions",
-        f"2. Measure: CTR, conversion rate, and average order value",
-        f"3. Statistical significance threshold: 95% confidence",
-        f"4. Test one element at a time when possible",
-        f"5. Primary metric: conversion rate",
+        "1. Run each variant for minimum 7 days or 1000 impressions",
+        "2. Measure: CTR, conversion rate, and average order value",
+        "3. Statistical significance threshold: 95% confidence",
+        "4. Test one element at a time when possible",
+        "5. Primary metric: conversion rate",
     ]
     if len(plan.variants) > 3:
         lines.append("6. Consider sequential testing (champion vs challenger)")

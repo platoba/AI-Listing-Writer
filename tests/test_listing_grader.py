@@ -1,5 +1,4 @@
 """Tests for listing_grader module."""
-import pytest
 
 from app.listing_grader import (
     GradeDetail,

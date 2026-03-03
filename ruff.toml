@@ -1,0 +1,11 @@
+[lint]
+# Ignore line length and some style issues for now
+ignore = [
+    "E501",  # Line too long
+    "E741",  # Ambiguous variable name
+    "F841",  # Local variable assigned but never used
+    "W293",  # Blank line contains whitespace
+]
+
+[lint.per-file-ignores]
+"tests/*" = ["F841"]  # Allow unused variables in tests

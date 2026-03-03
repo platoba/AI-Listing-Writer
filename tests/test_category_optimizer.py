@@ -1,7 +1,7 @@
 """Tests for category optimizer."""
 import pytest
 from app.category_optimizer import (
-    CategoryOptimizer, CategoryMatch, CategorySuggestion,
+    CategoryOptimizer, CategorySuggestion,
     CrossPlatformMapping, detect_category,
     CATEGORY_TAXONOMY, AMAZON_BROWSE_NODES,
     PLATFORM_CATEGORY_NAMES,

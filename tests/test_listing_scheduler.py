@@ -1,7 +1,6 @@
 """Tests for listing_scheduler module."""
 from datetime import datetime, timedelta
 
-import pytest
 
 from app.listing_scheduler import (
     COOLDOWN_HOURS,

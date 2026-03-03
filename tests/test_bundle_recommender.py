@@ -1,5 +1,4 @@
 """Tests for Bundle Recommender."""
-import pytest
 from app.bundle_recommender import (
     BundleRecommender,
     Product, Bundle,

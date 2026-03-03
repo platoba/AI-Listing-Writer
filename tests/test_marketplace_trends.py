@@ -1,10 +1,7 @@
 """Tests for marketplace_trends module."""
 
-import os
 import sqlite3
-import tempfile
 from datetime import datetime, timedelta
-from unittest.mock import patch
 
 import pytest
 

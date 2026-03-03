@@ -303,7 +303,7 @@ class LocalizationResult:
 
     def summary(self) -> str:
         lines = [
-            f"🌐 Localization Report",
+            "🌐 Localization Report",
             f"Source: {self.source_locale} → Target: {self.target_locale}",
             f"Quality Score: {self.quality_score:.0f}/100",
             "",

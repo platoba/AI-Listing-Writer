@@ -5,11 +5,6 @@ from app.hijack_detector import (
     HijackDetector,
     AlertSeverity,
     AlertType,
-    SellerRecord,
-    BuyBoxStatus,
-    HijackAlert,
-    CounterfeitRisk,
-    ListingHealth,
 )
 
 

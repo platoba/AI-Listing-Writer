@@ -10,7 +10,6 @@ Analyze product pricing and recommend strategies based on:
 
 Works entirely offline — no API calls needed for core analysis.
 """
-import re
 import math
 from dataclasses import dataclass, field
 from typing import Optional
@@ -462,7 +461,7 @@ def analyze_pricing(
             strategy=PriceStrategy.PENETRATION,
             suggested_price=penetration_price,
             original_price=price,
-            rationale=f"Launch at 25% below market avg to gain initial reviews/sales velocity",
+            rationale="Launch at 25% below market avg to gain initial reviews/sales velocity",
             confidence=0.60,
             potential_uplift="3-5x initial sales velocity, raise price after 100+ reviews",
         ))

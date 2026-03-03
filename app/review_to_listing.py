@@ -22,7 +22,6 @@ import re
 from collections import Counter
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional
 
 
 # ── Models ───────────────────────────────────────────────────

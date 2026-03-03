@@ -1,5 +1,4 @@
 """Tests for the platform validator module."""
-import pytest
 from app.validator import (
     validate_listing,
     validate_batch,

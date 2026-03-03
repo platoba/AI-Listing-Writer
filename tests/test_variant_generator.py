@@ -1,8 +1,6 @@
 """Tests for variant_generator A/B testing module."""
-import pytest
 from app.variant_generator import (
-    Variant, VariantType, ABTest, TestStatus, TestResult,
-    variant_id, chi_square_test, is_significant, calculate_lift,
+    Variant, VariantType, ABTest, TestStatus, variant_id, chi_square_test, is_significant, calculate_lift,
     min_sample_size, generate_title_variants, generate_bullet_variants,
     generate_report,
 )

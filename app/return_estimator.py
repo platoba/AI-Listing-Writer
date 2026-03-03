@@ -16,7 +16,6 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional
 
 
 class ReturnRisk(str, Enum):
@@ -470,13 +469,13 @@ class ReturnRateEstimator:
     def report(self, estimate: ReturnEstimate) -> str:
         """Generate human-readable return rate report."""
         lines = [
-            f"📦 Return Rate Estimation",
+            "📦 Return Rate Estimation",
             f"{'=' * 50}",
             f"Estimated Return Rate: {estimate.estimated_rate}% ({estimate.risk_level.value.upper()})",
             f"Category Baseline:     {estimate.category_baseline}%",
             f"Delta:                 {'+' if estimate.delta_from_baseline > 0 else ''}{estimate.delta_from_baseline}%",
-            f"",
-            f"Risk Factors:",
+            "",
+            "Risk Factors:",
         ]
 
         for f in sorted(estimate.factors, key=lambda x: -x.score):
@@ -486,7 +485,7 @@ class ReturnRateEstimator:
             lines.append(f"  {icon} {f.name:28s} risk={f.score:5.1f}  {f.detail}")
 
         if estimate.recommendations:
-            lines.append(f"\n💡 Recommendations:")
+            lines.append("\n💡 Recommendations:")
             for i, rec in enumerate(estimate.recommendations, 1):
                 lines.append(f"  {i}. {rec}")
 

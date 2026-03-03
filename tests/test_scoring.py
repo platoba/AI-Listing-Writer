@@ -1,5 +1,4 @@
 """Tests for the SEO scoring engine."""
-import pytest
 from app.scoring import (
     score_listing,
     score_readability,

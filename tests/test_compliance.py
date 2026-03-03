@@ -1,8 +1,7 @@
 """Tests for platform compliance checker."""
-import pytest
 from app.compliance import (
     ComplianceChecker, ComplianceReport, ComplianceIssue,
-    Severity, PlatformRules, PLATFORM_RULES, CharLimit,
+    Severity, PLATFORM_RULES,
 )
 
 

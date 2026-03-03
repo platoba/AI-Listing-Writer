@@ -1,7 +1,6 @@
 """Keyword extraction and suggestion engine."""
 import re
 from collections import Counter
-from typing import Optional
 
 from app.ai_engine import call_ai
 

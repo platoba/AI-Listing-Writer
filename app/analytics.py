@@ -3,7 +3,6 @@
 Tracks listing generation metrics, quality scores, platform trends,
 and user productivity for insights and reporting.
 """
-import json
 import sqlite3
 import time
 from contextlib import contextmanager

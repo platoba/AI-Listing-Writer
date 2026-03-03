@@ -1,10 +1,7 @@
 """Tests for Conversion Copy Engine."""
-import pytest
 from app.conversion_copy import (
     TriggerCategory, TriggerScanner, TriggerMatch,
-    PowerWordAnalyzer, PowerWordHit,
-    BenefitExtractor, BenefitFeature,
-    StructureAnalyzer, CTAGenerator,
+    PowerWordAnalyzer, BenefitExtractor, StructureAnalyzer, CTAGenerator,
     CopyStore, CopyScore, ConversionCopyEngine,
 )
 

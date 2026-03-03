@@ -20,7 +20,7 @@ import sqlite3
 import json
 import hashlib
 import difflib
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
 from datetime import datetime

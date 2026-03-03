@@ -1,15 +1,8 @@
 """Tests for Supply Chain Risk Analyzer."""
 
 import pytest
-import os
-import tempfile
-import sqlite3
 from app.supply_chain_risk import (
-    SupplyChainRiskAnalyzer, RiskFactor, SupplierProfile, LeadTimeEstimate,
-    SupplyChainReport, RiskLevel, RiskCategory, OriginRegion,
-    COUNTRY_RISK_PROFILES, SEASONAL_RISK_CALENDAR, CATEGORY_RISK_MODIFIERS,
-    _score_to_level, _resolve_country, _detect_origin_from_listing,
-    _detect_category,
+    SupplyChainRiskAnalyzer, _score_to_level, _resolve_country,
 )
 
 

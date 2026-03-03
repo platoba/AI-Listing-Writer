@@ -7,9 +7,8 @@ Optimizes product listings based on:
 - Event-based optimization windows
 - Regional seasonal differences
 """
-import re
 from dataclasses import dataclass, field
-from datetime import datetime, date
+from datetime import date
 from typing import Optional
 
 

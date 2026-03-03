@@ -3,9 +3,8 @@
 """
 from telegram import Update
 from telegram.ext import ContextTypes
-from app.competitor_analyzer import CompetitorAnalyzer, CompetitorListing
+from app.competitor_analyzer import CompetitorAnalyzer
 from app.ab_test_advisor import ABTestAdvisor
-import json
 
 
 async def handle_competitor_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -59,7 +58,7 @@ async def handle_competitor_command(update: Update, context: ContextTypes.DEFAUL
     avg_price = sum(c.price for c in competitors if c.price) / len([c for c in competitors if c.price])
     avg_rating = sum(c.rating for c in competitors if c.rating) / len([c for c in competitors if c.rating])
     
-    report += f"📈 **市场基准**\n"
+    report += "📈 **市场基准**\n"
     report += f"平均价格: ${avg_price:.2f}\n"
     report += f"平均评分: {avg_rating:.2f}⭐\n"
     report += f"总评论数: {sum(c.reviews_count or 0 for c in competitors)}\n\n"
@@ -71,7 +70,7 @@ async def handle_competitor_command(update: Update, context: ContextTypes.DEFAUL
             all_keywords[kw] = all_keywords.get(kw, 0) + 1
     
     top_keywords = sorted(all_keywords.items(), key=lambda x: x[1], reverse=True)[:15]
-    report += f"🔑 **高频关键词TOP15**\n"
+    report += "🔑 **高频关键词TOP15**\n"
     report += ', '.join([f"{kw}({cnt})" for kw, cnt in top_keywords])
     
     await update.message.reply_text(report, parse_mode='Markdown')

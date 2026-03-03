@@ -1,7 +1,6 @@
 """Redis-backed history and rate limiting."""
 import json
 import time
-from typing import Optional
 
 
 class HistoryStore:

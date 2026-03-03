@@ -1,5 +1,4 @@
 """Tests for Fulfillment Advisor."""
-import pytest
 import tempfile
 import os
 from app.fulfillment_advisor import (

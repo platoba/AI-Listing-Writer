@@ -1,6 +1,5 @@
 """Tests for A/B testing variant generator."""
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from app.ab_testing import (
     VariantAngle,
     Variant,

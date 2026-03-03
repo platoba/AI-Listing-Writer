@@ -14,10 +14,8 @@ across 12 quality signals, calibrated against marketplace best practices.
 from __future__ import annotations
 
 import re
-import math
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional
 
 
 # ── Models ───────────────────────────────────────────────────
@@ -548,17 +546,17 @@ class PerformancePredictor:
     def report(self, prediction: PerformancePrediction) -> str:
         """Generate human-readable performance report."""
         lines = [
-            f"📊 Listing Performance Prediction",
+            "📊 Listing Performance Prediction",
             f"{'=' * 50}",
             f"Overall Score: {prediction.overall_score}/100 ({prediction.tier.value.upper()})",
-            f"",
-            f"Estimates:",
+            "",
+            "Estimates:",
             f"  CTR:        {prediction.ctr_estimate}",
             f"  Conversion: {prediction.conversion_estimate}",
             f"  Visibility: {prediction.visibility_estimate}",
             f"  Position:   {prediction.competitive_position}",
-            f"",
-            f"Signal Breakdown:",
+            "",
+            "Signal Breakdown:",
         ]
 
         for s in sorted(prediction.signals, key=lambda x: -x.score * x.weight):
@@ -566,7 +564,7 @@ class PerformancePredictor:
             lines.append(f"  {s.name:25s} {bar} {s.score:5.1f} (×{s.weight:.2f})")
 
         if prediction.top_improvements:
-            lines.append(f"\n💡 Top Improvements:")
+            lines.append("\n💡 Top Improvements:")
             for i, imp in enumerate(prediction.top_improvements, 1):
                 lines.append(f"  {i}. {imp}")
 

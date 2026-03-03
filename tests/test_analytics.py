@@ -1,6 +1,5 @@
 """Tests for the analytics engine."""
 import pytest
-import time
 import tempfile
 from pathlib import Path
 from app.analytics import (
@@ -10,7 +9,6 @@ from app.analytics import (
     get_platform_trends,
     get_global_stats,
     export_analytics_csv,
-    UserStats,
 )
 
 

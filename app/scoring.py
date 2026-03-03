@@ -8,7 +8,6 @@ Scores listings on multiple dimensions:
 - Technical SEO (structured data hints, meta compliance)
 """
 import re
-import math
 from dataclasses import dataclass, field
 from typing import Optional
 

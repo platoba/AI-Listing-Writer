@@ -1,8 +1,6 @@
 """Tests for AI Listing Writer."""
 import os
 import sys
-import json
-import time
 import pytest
 from unittest.mock import patch, MagicMock
 

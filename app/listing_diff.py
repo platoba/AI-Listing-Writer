@@ -12,7 +12,6 @@ Features:
 - Visual diff output (terminal-friendly)
 """
 import re
-import math
 from dataclasses import dataclass, field
 from typing import Optional
 from enum import Enum
@@ -141,7 +140,7 @@ class ListingDiffResult:
 
     def summary(self) -> str:
         lines = [
-            f"📊 Listing Diff Summary",
+            "📊 Listing Diff Summary",
             f"{'─' * 50}",
             f"  Sections changed: {self.sections_changed}/{len(self.section_diffs)}",
             f"  Added: {self.sections_added} | Removed: {self.sections_removed}",

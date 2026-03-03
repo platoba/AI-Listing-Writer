@@ -1,13 +1,11 @@
 """Tests for Listing Forensics."""
-import pytest
 from app.listing_forensics import (
     ListingForensics,
-    ForensicIssue, ForensicReport, ListingData,
+    ForensicReport, ListingData,
     TitleDiagnostic, DescriptionDiagnostic, ImageDiagnostic,
     PricingDiagnostic, KeywordDiagnostic, ReviewDiagnostic,
     ConversionDiagnostic,
-    Severity, IssueCategory,
-    _grade,
+    Severity, _grade,
 )
 
 

@@ -1,5 +1,4 @@
 """Tests for the multi-language translator module."""
-import pytest
 from unittest.mock import patch
 from app.translator import (
     LOCALES,

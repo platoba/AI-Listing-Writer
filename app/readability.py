@@ -198,7 +198,7 @@ class ReadabilityReport:
 
     def summary(self) -> str:
         lines = [
-            f"📖 Readability Report",
+            "📖 Readability Report",
             f"Language: {self.language} | Length: {self.text_length} chars",
             f"Level: {self.overall_level.value.replace('_', ' ').title()} (Grade {self.overall_grade:.1f})",
             f"⏱️ Reading Time: {self.reading_time_seconds // 60}m {self.reading_time_seconds % 60}s",
@@ -214,7 +214,7 @@ class ReadabilityReport:
             v = self.vocabulary
             lines.extend([
                 "",
-                f"📝 Vocabulary:",
+                "📝 Vocabulary:",
                 f"  Words: {v.total_words} ({v.unique_words} unique, {v.lexical_diversity:.0%} diversity)",
                 f"  Avg length: {v.avg_word_length:.1f} chars | Complex: {v.complex_words} ({v.complex_word_pct:.0%})",
             ])
@@ -223,7 +223,7 @@ class ReadabilityReport:
             s = self.sentences
             lines.extend([
                 "",
-                f"📐 Sentences:",
+                "📐 Sentences:",
                 f"  Count: {s.total_sentences} | Avg length: {s.avg_words_per_sentence:.1f} words",
                 f"  Range: {s.min_sentence_length}-{s.max_sentence_length} words",
                 f"  Too long (>25): {s.very_long_sentences} | Too short (<5): {s.very_short_sentences}",

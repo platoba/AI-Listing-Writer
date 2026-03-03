@@ -1,7 +1,7 @@
 """Tests for cross_platform listing adapter."""
 import pytest
 from app.cross_platform import (
-    Platform, PlatformLimits, PLATFORM_LIMITS,
+    Platform, PLATFORM_LIMITS,
     UniversalListing, AdaptedListing,
     strip_emojis, strip_html, smart_truncate,
     text_to_html_description, extract_keywords_from_text,

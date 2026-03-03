@@ -14,7 +14,7 @@ import math
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from typing import Optional
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 # Sentiment lexicons

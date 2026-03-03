@@ -1,12 +1,10 @@
 """Tests for brand_voice module."""
-import pytest
 from app.brand_voice import (
     BrandVoiceProfile, BrandVoiceReport, BrandViolation,
     Tone, ViolationType,
     detect_tone, check_brand_voice, count_emojis,
     check_sentence_lengths,
-    get_preset, list_presets, PRESET_PROFILES,
-    TONE_INDICATORS,
+    get_preset, list_presets, TONE_INDICATORS,
 )
 
 

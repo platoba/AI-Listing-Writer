@@ -1,11 +1,9 @@
 """Tests for Customer Q&A Generator."""
-import pytest
 import tempfile
 import os
 from app.customer_qa import (
     CustomerQAGenerator,
-    QAPair, ObjectionResponse, QAReport,
-    QuestionCategory, BuyerPersona, Platform,
+    QAReport,
     _extract_features, _extract_specs, _extract_materials, _generate_answer,
 )
 

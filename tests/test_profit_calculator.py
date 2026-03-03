@@ -4,7 +4,6 @@ import pytest
 from app.profit_calculator import (
     ProfitCalculator,
     ProfitBreakdown,
-    MultiPlatformComparison,
     Platform,
     Currency,
     PLATFORM_FEES,
