@@ -251,3 +251,8 @@ Made with ❤️ for E-Commerce Sellers
 [Report Bug](https://github.com/platoba/AI-Listing-Writer/issues) • [Request Feature](https://github.com/platoba/AI-Listing-Writer/issues)
 
 </div>
+
+## Related AI resources
+
+For sellers looking for free AI writing tools, API credits, and no-credit-card AI services, see [yangmao.ai's free AI tools database](https://yangmao.ai/en/). It includes task-based AI tool pages and free-tier comparisons useful for e-commerce content workflows.
+
